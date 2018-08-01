@@ -1,0 +1,107 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>商品详情</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <!-- jquery -->
+    <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+    <!-- bootstrap -->
+    <link rel="stylesheet" type="text/css" th:href="@{/bootstrap/css/bootstrap.min.css}" />
+    <script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+    <!-- jquery-validator -->
+    <script type="text/javascript" th:src="@{/jquery-validation/jquery.validate.min.js}"></script>
+    <script type="text/javascript" th:src="@{/jquery-validation/localization/messages_zh.min.js}"></script>
+    <!-- layer -->
+    <script type="text/javascript" th:src="@{/layer/layer.js}"></script>
+    <!-- md5.js -->
+    <script type="text/javascript" th:src="@{/js/md5.min.js}"></script>
+    <!-- common.js -->
+    <script type="text/javascript" th:src="@{/js/common.js}"></script>
+</head>
+<body>
+
+<div class="panel panel-default">
+    <div class="panel-heading">秒杀商品详情</div>
+    <div class="panel-body">
+        <span th:if="${user eq null}"> 您还没有登录，请登陆后再操作<br/></span>
+        <span>没有收货地址的提示。。。</span>
+    </div>
+    <table class="table" id="goodslist">
+        <tr>
+            <td>商品名称</td>
+            <td colspan="3" th:text="${goods.goodsName}"></td>
+        </tr>
+        <tr>
+            <td>商品图片</td>
+            <td colspan="3"><img th:src="@{${goods.goodsImg}}" width="200" height="200" /></td>
+        </tr>
+        <tr>
+            <td>秒杀开始时间</td>
+            <td th:text="${#dates.format(goods.startDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
+            <td id="miaoshaTip">
+                <!-- 隐藏域临时保存${remainSeconds}，在进行中和已结束也有remainSeconds-->
+                <input type="hidden" id="remainSeconds" th:value="${remainSeconds}" />
+                <span th:if="${miaoshaStatus eq 0}">秒杀倒计时：<span id="countDown" th:text="${remainSeconds}"></span>秒</span>
+                <span th:if="${miaoshaStatus eq 1}">秒杀进行中</span>
+                <span th:if="${miaoshaStatus eq 2}">秒杀已结束</span>
+            </td>
+            <td>
+                <form id="miaoshaForm" method="post" action="/miaosha/do_miaosha">
+                    <button class="btn btn-primary btn-block" type="submit" id="buyButton">立即秒杀</button><!-- 只有在进行中才可以点击-->
+                    <input type="hidden" name="goodsId" th:value="${goods.id}" />
+                </form>
+            </td>
+        </tr>
+        <tr>
+            <td>商品原价</td>
+            <td colspan="3" th:text="${goods.goodsPrice}"></td>
+        </tr>
+        <tr>
+            <td>秒杀价</td>
+            <td colspan="3" th:text="${goods.miaoshaPrice}"></td>
+        </tr>
+        <tr>
+            <td>库存数量</td>
+            <td colspan="3" th:text="${goods.stockCount}"></td>
+        </tr>
+    </table>
+</div>
+
+</body>
+<script>
+    $(function () {
+        countDown();
+    })
+
+    function countDown() {
+        var remainSeconds = $("#remainSeconds").val(); //是val不是value 用了value不会倒计时 jQuery中没有value方法。可以通过attr方法获取或设置标签中的value属性的值
+        var timeout;
+        if (remainSeconds > 0) {   //秒杀还没开始，倒计时
+            $("#buyButton").attr("disabled", true); //设置属性不可点
+
+            // timeout = setTimeout(function () {
+            //     $("#countDown").text(remainSeconds - 1); //设置countDown内容text
+            //     $("#remainSeconds").val(remainSeconds - 1); //保持同步，所以remainSeconds-1 是val不是value
+            //     countDown();
+            //     }, 1000);//1秒之后回调这个函数
+            timeout = setTimeout(function(){
+                $("#countDown").text(remainSeconds - 1);
+                $("#remainSeconds").val(remainSeconds - 1);
+                countDown();
+            },1000);
+
+        }else if (remainSeconds == 0) { //秒杀进行中
+            $("#buyButton").attr("disabled", false);
+            if(timeout) {//timeout>0,清除函数
+                clearTimeout(timeout);
+                $("#miaoshaTip").html(秒杀进行中);
+            }
+        }else {//秒杀已经结束，关闭按钮
+            $("#buyButton").attr("disabled", true);
+            $("#miaoshaTip").html(秒杀已结束);
+        }
+    }
+</script>
+
+</html>
