@@ -6,6 +6,12 @@ categories: 秒杀项目
 
 ---
 
+详细地址见个人博客：jaecoding.github.io
+
+主要秒杀流程
+![此处输入图片的描述][1]
+[1]: http://pbw0qqogs.bkt.clouddn.com/%E7%A7%92%E6%9D%80%E6%A8%A1%E5%9D%97%E6%B5%81%E7%A8%8B.jpg
+
 
 # 秒杀项目学习笔记 第一、二章——项目框架搭建 实现登陆功能
 redis有多个库，最多16个，默认为0库
