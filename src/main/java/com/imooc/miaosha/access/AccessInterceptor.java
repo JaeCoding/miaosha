@@ -20,6 +20,8 @@ import java.io.OutputStream;
 
 
 /**
+ * 限流拦截器
+ *
  * HandlerInterceptorAdapter是 拦截器类的基类
  * 这里 实现了一个拦截器
  * 除了实现 限流功能 也能实现其他的拦截功能
@@ -39,7 +41,7 @@ public class AccessInterceptor  extends HandlerInterceptorAdapter{
 			throws Exception {
 		if(handler instanceof HandlerMethod) {
 			MiaoshaUser user = getUser(request, response);
-			UserContext.setUser(user);//保存user到线程池中
+			UserContext.setUser(user);//保存user到ThreadLocal中  静态属性可以直接用
 
 			HandlerMethod hm = (HandlerMethod)handler;
 			AccessLimit accessLimit = hm.getMethodAnnotation(AccessLimit.class);//通过HandlerMethod拿到注解
@@ -49,7 +51,7 @@ public class AccessInterceptor  extends HandlerInterceptorAdapter{
 			}
 			int seconds = accessLimit.seconds();//所设定 拦截阈值
 			int maxCount = accessLimit.maxCount();
-			boolean needLogin = accessLimit.needLogin();
+			boolean needLogin = accessLimit.needLogin();//默认是true
 
 			String key = request.getRequestURI();
 			if(needLogin) {

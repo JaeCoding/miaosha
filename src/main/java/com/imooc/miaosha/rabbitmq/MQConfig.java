@@ -26,6 +26,7 @@ public class MQConfig {
 
 	/**
 	 * Direct模式 交换机Exchange
+	 * 直接绑定id
 	 * */
 	@Bean
 	public Queue queue() {
@@ -34,6 +35,7 @@ public class MQConfig {
 
 	/**
 	 * Topic模式 交换机Exchange
+	 * 根据topic规则绑定
 	 * */
 	@Bean
 	public Queue topicQueue1() {
@@ -57,6 +59,7 @@ public class MQConfig {
 	}
 	/**
 	 * Fanout模式 交换机Exchange
+	 * 向绑定在交换机上的的所有 队列发放消息
 	 * */
 	@Bean
 	public FanoutExchange fanoutExchage(){
@@ -72,6 +75,7 @@ public class MQConfig {
 	}
 	/**
 	 * Header模式 交换机Exchange
+	 * 根据map中保存的规则  匹配发放消息
 	 * */
 	@Bean
 	public HeadersExchange headersExchage(){

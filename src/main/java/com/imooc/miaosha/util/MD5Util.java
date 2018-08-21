@@ -12,13 +12,13 @@ public class MD5Util {
         return DigestUtils.md5Hex(src);
     }
 
-    //第一次MD5，固定的salt
+    //第一次MD5，代码中固定的salt
     public static String inputPassFormPass(String inputPass) {
         String string = ""+salt.charAt(0) + salt.charAt(2) + inputPass + salt.charAt(5) + salt.charAt(4);
         return md5(string);
     }
 
-    //第二次md5，在服务端可以用随机salt
+    //第二次md5，取自数据库的salt 每个用户不同
     public static String formPassToDBPass(String formPass, String salt) {
         String string = ""+salt.charAt(0) + salt.charAt(2) + formPass + salt.charAt(5) + salt.charAt(4);
         return md5(string);
@@ -29,7 +29,7 @@ public class MD5Util {
     }
 
     public static void main(String[] args) {
-        System.out.println(inputPassToDBPass("123456", "1a2b3c4d"));// 12 123456 c3反查彩虹表的结果
+        System.out.println(inputPassToDBPass("13810038452", "1a2b3c4d"));// 12 123456 c3反查彩虹表的结果
     }
 
 
